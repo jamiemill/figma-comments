@@ -7,35 +7,45 @@ const FILE_ID = "paste file ID here";
 
 let document, comments;
 
-figmaAPIRequest(`/v1/files/${FILE_ID}`, function(data) {
-    document = data.document;
-    figmaAPIRequest(`/v1/files/${FILE_ID}/comments`, function(data) {
-        comments = data.comments;
+async function main() {
+    try {
+        document = await figmaAPIRequest(`/v1/files/${FILE_ID}`);
+        document = document.document;
+        
+        comments = await figmaAPIRequest(`/v1/files/${FILE_ID}/comments`);
+        comments = comments.comments;
+        
         const rows = comments.map(toResultRow);
         console.log(toCSV(rows));
-    });
-});
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+main();
 
 
 
 // Utility functions
 
-function figmaAPIRequest(endpoint, cb) {
+function figmaAPIRequest(endpoint) {
     const url = `https://api.figma.com${endpoint}`;
     const headers = {'X-FIGMA-TOKEN': ACCESS_TOKEN};
 
-    get({...parseURL(url), headers}, function(res){
-        if (res.statusCode !== 200) {
-            throw `Request Failed. Status Code: ${res.statusCode} ${res.statusMessage}`;
-        } else {
-            res.setEncoding('utf8');
-            let rawData = '';
-            res.on('data', (chunk) => { rawData += chunk; });
-            res.on('end', () => {
-                const parsedData = JSON.parse(rawData);
-                cb(parsedData);
-            });
-        }
+    return new Promise((resolve, reject) => {
+        get({...parseURL(url), headers}, function(res){
+            if (res.statusCode !== 200) {
+                reject(`Request for "${url}" failed.\nStatus Code: ${res.statusCode}\nMessage: ${res.statusMessage}`);
+            } else {
+                res.setEncoding('utf8');
+                let rawData = '';
+                res.on('data', (chunk) => { rawData += chunk; });
+                res.on('end', () => {
+                    const parsedData = JSON.parse(rawData);
+                    resolve(parsedData);
+                });
+            }
+        });
     });
 }
 
