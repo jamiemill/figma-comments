@@ -1,32 +1,37 @@
 const get = require("https").get;
 const parseURL = require("url").parse;
 
-
-const ACCESS_TOKEN = "paste access token here";
-const FILE_ID = "paste file ID here";
-
-let document, comments;
+let document, comments, ACCESS_TOKEN, FILE_ID;
 
 async function main() {
-    try {
-        document = await figmaAPIRequest(`/v1/files/${FILE_ID}`);
-        document = document.document;
-        
-        comments = await figmaAPIRequest(`/v1/files/${FILE_ID}/comments`);
-        comments = comments.comments;
-        
-        const rows = comments.map(toResultRow);
-        console.log(toCSV(rows));
-    } catch (e) {
-        console.error(e);
-    }
-};
 
-main();
+    [ACCESS_TOKEN, FILE_ID] = process.argv.slice(2);
+    if (!ACCESS_TOKEN || !FILE_ID) {
+        throw usage();
+    }
+
+    document = await figmaAPIRequest(`/v1/files/${FILE_ID}`);
+    document = document.document;
+    
+    comments = await figmaAPIRequest(`/v1/files/${FILE_ID}/comments`);
+    comments = comments.comments;
+    
+    const rows = comments.map(toResultRow);
+    console.log(toCSV(rows));
+}
+
+main().catch(e => console.error(e));
 
 
 
 // Utility functions
+
+function usage() {
+    return `
+    Usage:
+        node figma-comments-to-tsv.js ACCESS_TOKEN FILE_ID > output.tsv
+    `;
+}
 
 function figmaAPIRequest(endpoint) {
     const url = `https://api.figma.com${endpoint}`;
