@@ -3,7 +3,7 @@ const parseURL = require("url").parse;
 
 let document, comments, ACCESS_TOKEN, FILE_ID;
 
-const headerRow = ["Comment", "Frame", "Tags"];
+const headerRow = ["Comment", "Created", "Frame", "Tags"];
 
 async function main() {
 
@@ -18,7 +18,7 @@ async function main() {
     comments = await figmaAPIRequest(`/v1/files/${FILE_ID}/comments`);
     comments = comments.comments;
     
-    const rows = comments.map(toResultRow);
+    const rows = comments.sort(byCreated).map(toResultRow);
     console.log(toCSV([headerRow, ...rows]));
 }
 
@@ -76,6 +76,7 @@ function isReply(comment) {
 function toResultRow(comment) {
     return [
         comment.message,
+        comment.created_at,
         getCommentFrame(comment).name,
         getCommentTags(comment).join(",")
     ];
@@ -97,4 +98,10 @@ function findChildById(parent, id) {
         }
     }
     return false;
+}
+
+function byCreated(a,b) {
+    if (a.created_at < b.created_at) return -1;
+    if (a.created_at > b.created_at) return 1;
+    return 0;
 }

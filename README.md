@@ -21,11 +21,8 @@ Comments can optionally contain #hashtags which will be extracted into their own
 
 Data in tab-separated format, with columns like this:
 
-| Comment                                  | Frame   | Tags  |
-| -----------------------------------------|---------|-------|
-| Second followup                          | Frame A |       |
-| Comment on frame on page 2               | Frame C |       |
-| A comment on frame A #tag2               | Frame B | #tag2 |
-| A followup to a comment on Frame B #tag2 | Frame A | #tag2 |
-| Another comment on Frame B #tag1         | Frame A | #tag1 |
-| This is a comment on Frame B #tag1       | Frame A | #tag1 |
+| Comment                            | Created              | Frame   | Tags        |
+| -----------------------------------|----------------------|---------|-------------|
+| Comment #tag1 #tag2                | 2019-01-10T17:00:00Z | Frame A | #tag1,#tag2 |
+| Second comment                     | 2019-01-10T17:00:01Z | Frame C |             |
+| A followup to first comment #tag2  | 2019-01-10T17:00:02Z | Frame A | #tag2       |
