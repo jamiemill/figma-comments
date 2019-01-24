@@ -3,6 +3,8 @@ const parseURL = require("url").parse;
 
 let document, comments, ACCESS_TOKEN, FILE_ID;
 
+const headerRow = ["Comment", "Frame", "Tags"];
+
 async function main() {
 
     [ACCESS_TOKEN, FILE_ID] = process.argv.slice(2);
@@ -17,7 +19,7 @@ async function main() {
     comments = comments.comments;
     
     const rows = comments.map(toResultRow);
-    console.log(toCSV(rows));
+    console.log(toCSV([headerRow, ...rows]));
 }
 
 main().catch(e => console.error(e));

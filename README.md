@@ -1,6 +1,8 @@
 # Figma Comments
 
-Extract comments from a Figma file
+Extract comments from a Figma file into tab-separated text format.
+
+Comments can optionally contain #hashtags which will be extracted into their own, comma-separated column.
 
 ## Requires
 
@@ -14,3 +16,16 @@ Extract comments from a Figma file
 ```
     node figma-comments-to-tsv.js ACCESS_TOKEN FILE_ID > output.tsv
 ```
+
+## Output
+
+Data in tab-separated format, with columns like this:
+
+| Comment                                  | Frame   | Tags  |
+| -----------------------------------------|---------|-------|
+| Second followup                          | Frame A |       |
+| Comment on frame on page 2               | Frame C |       |
+| A comment on frame A #tag2               | Frame B | #tag2 |
+| A followup to a comment on Frame B #tag2 | Frame A | #tag2 |
+| Another comment on Frame B #tag1         | Frame A | #tag1 |
+| This is a comment on Frame B #tag1       | Frame A | #tag1 |
