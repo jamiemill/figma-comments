@@ -40,7 +40,7 @@ function toResultRow(data, {FILE_ID}) {
             comment.created_at,
             lib.getCommentFrame(comment, data).name,
             lib.getCommentTags(comment).join(","),
-            lib.generateFrameURL(lib.getCommentFrame(comment, data), FILE_ID)
+            lib.generateFrameURL(lib.getCommentFrame(comment, data), {FILE_ID})
         ];
     }
 }

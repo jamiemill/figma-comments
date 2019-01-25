@@ -31,6 +31,12 @@ it("can find the frame of a reply", () => {
     expectEqual(frame.name, "Frame B");
 });
 
+it("can generate a frame URL", () => {
+    const exampleFrame = { id: "1:1" };
+    const url = lib.generateFrameURL(exampleFrame, {FILE_ID: "AAA"});
+    expectEqual(url, "https://www.figma.com/proto/AAA/?node-id=1%3A1");
+});
+
 function it(description, block) {
     try {
         block();
