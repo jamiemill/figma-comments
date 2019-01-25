@@ -32,12 +32,14 @@ function figmaAPIRequest(endpoint, {ACCESS_TOKEN, FILE_ID}) {
 }
 
 function getCommentFrame(comment, data) {
-    if (!isReply(comment)) {
-        return findChildById(data.document, comment.client_meta.node_id);
-    } else {
-        const parentComment = data.comments.find(_ => _.id === comment.parent_id)
-        return findChildById(data.document, parentComment.client_meta.node_id);
-    }
+    const rootComment = isReply(comment) ?
+        findCommentById(data.comments, comment.parent_id)
+        : comment;
+    return findChildById(data.document, rootComment.client_meta.node_id);
+}
+
+function findCommentById(comments, id) {
+    return comments.find(_ => _.id === id);
 }
 
 function getCommentTags(comment) {

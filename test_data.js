@@ -11,7 +11,7 @@ module.exports = {
         "children": [
           {
             "id": "1:2",
-            "name": "Frame B",
+            "name": "Frame A",
             "type": "FRAME",
             "blendMode": "PASS_THROUGH",
             "children": [
@@ -95,7 +95,7 @@ module.exports = {
           },
           {
             "id": "1:3",
-            "name": "Frame A",
+            "name": "Frame B",
             "type": "FRAME",
             "blendMode": "PASS_THROUGH",
             "children": [
