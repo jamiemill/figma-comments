@@ -74,6 +74,10 @@ function generateFrameURL(frame, {FILE_ID}) {
     return `https://www.figma.com/proto/${FILE_ID}/?node-id=${encodeURIComponent(frame.id)}`;
 }
 
+function toCSV(rows) {
+    return rows.map(row => row.map(c=>c.replace(/"/g,'""')).map(c=>`"${c}"`).join("\t")).join("\n");
+}
+
 module.exports = {
     figmaAPIRequest,
     fetchDocumentWithComments,
@@ -82,5 +86,6 @@ module.exports = {
     isReply,
     findChildById,
     byCreated,
-    generateFrameURL
+    generateFrameURL,
+    toCSV
 };

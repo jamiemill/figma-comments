@@ -10,7 +10,7 @@ async function main() {
         .sort(lib.byCreated)
         .map(toResultRow(data, {FILE_ID}));
 
-    console.log(toCSV([headerRow(), ...rows]));
+    console.log(lib.toCSV([headerRow(), ...rows]));
 }
 
 main().catch(e => console.error(e));
@@ -43,8 +43,4 @@ function toResultRow(data, {FILE_ID}) {
             lib.generateFrameURL(lib.getCommentFrame(comment, data), {FILE_ID})
         ];
     }
-}
-
-function toCSV(rows) {
-    return rows.map(row => row.join("\t")).join("\n");
 }

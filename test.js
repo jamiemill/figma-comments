@@ -37,6 +37,25 @@ it("can generate a frame URL", () => {
     expectEqual(url, "https://www.figma.com/proto/AAA/?node-id=1%3A1");
 });
 
+it("can create TSVs", () => {
+    const data = [["line 1 cell 1", "line 1 cell 2"], ["line 2 cell 1", "line 2 cell 2"]];
+    const expected = `"line 1 cell 1"\t"line 1 cell 2"\n"line 2 cell 1"\t"line 2 cell 2"`;
+    expectEqual(lib.toCSV(data), expected);
+});
+
+it("can create TSVs with newlines", () => {
+    const data = [["cell with\nnewline", "cell 2"]];
+    const expected = `"cell with\nnewline"\t"cell 2"`;
+    expectEqual(lib.toCSV(data), expected);
+});
+
+it("can create TSVs with quotes", () => {
+    const data = [["cell with \"quote\"", "cell 2"]];
+    const expected = `"cell with ""quote"""\t"cell 2"`;
+    expectEqual(lib.toCSV(data), expected);
+});
+
+
 function it(description, block) {
     try {
         block();
