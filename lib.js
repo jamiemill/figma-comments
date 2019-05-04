@@ -92,6 +92,10 @@ function findInstances(node) {
     }
 }
 
+function findInstancesOfComponent(node, componentId) {
+    return findInstances(node).filter(_ => _.componentId == componentId);
+}
+
 function getPathOfNodeWithId(node, id, path = []) {
     const name = node.name;
     // base case
@@ -132,6 +136,19 @@ function componentReportFromInstances(documentResponse) {
     }, {});
 }
 
+function componentReportFromComponents(documentResponse) {
+    const allComponents = documentResponse.components;
+    let components = {};
+    Object.keys(allComponents).forEach(id => {
+        const meta = {
+            count: findInstancesOfComponent(documentResponse.document, id).length,
+            path: getPathOfNodeWithId(documentResponse.document, id)
+        };
+        components[id] = Object.assign({}, allComponents[id], meta);
+    });
+    return components;
+}
+
 
 function flatten(arr) {
     return arr.reduce((prev,current) => prev.concat(current));
@@ -164,5 +181,6 @@ module.exports = {
     toCSV,
     findInstances,
     getPathOfNodeWithId,
-    componentReportFromInstances
+    componentReportFromInstances,
+    componentReportFromComponents
 };

@@ -132,6 +132,47 @@ it("can report on repeated component usage by looking at instances", () => {
     expectEquivalent(actual, expected);
 });
 
+it("can report on repeated component usage by looking at components", () => {
+    const actual = lib.componentReportFromComponents(data3.documentRes);
+
+    const expected = {
+      "1:17": {
+        key: "",
+        name: "LocalButtonComponentSymbolsPage",
+        description: "",
+        count: 2,
+        path: ["Document", "Symbols"]
+      },
+      "1:24": {
+        key: "3c729d01bd5e64e69eff1af87c076d5586e9564d",
+        name: "02. buttons / primary / focus",
+        description: "",
+        count: 2,
+        path: false
+      },
+      "1:6": {
+        key: "",
+        name: "LocalButtonComponentSamePage",
+        description: "",
+        count: 2,
+        path: ["Document", "Page 1"]
+      },
+      "9:17": {
+        key: "",
+        name: "LocalButtonComponentDeleted",
+        description: "",
+        count: 1,
+        path: false
+      }
+    };
+    // object keys are in different order so test this way
+    const keys = Object.keys(actual).sort();
+    expectEquivalent(keys, ["1:17", "1:24", "1:6", "9:17"]);
+    keys.forEach(k => {
+      expectEquivalent(actual[k], expected[k]);
+    });
+});
+
 it("can output the path of a node", () => {
     const expected = ["Document", "Page 1", "Frame 1"];
     const actual = lib.getPathOfNodeWithId(data3.documentRes.document, "1:18");
