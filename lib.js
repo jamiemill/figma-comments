@@ -82,6 +82,31 @@ function findInstances(parent) {
     }
 }
 
+function getPathOfNodeWithId(parent, id, path = []) {
+    const name = parent.name;
+    // base case
+    if (parent.id === id) {
+        return path;
+    }
+    // error case
+    else if (!parent.children) {
+        return false;
+    }
+    // recursion
+    else if (parent.children) {
+        for (let i = 0; i < parent.children.length; i += 1) {
+            let result = getPathOfNodeWithId(parent.children[i], id, path.concat(name));
+            if (result !== false) {
+                return result;
+            }
+        }
+    } else {
+        throw "unhandled state";
+    }
+    return false;
+}
+
+
 function flatten(arr) {
     return arr.reduce((prev,current) => prev.concat(current));
 }
@@ -111,5 +136,6 @@ module.exports = {
     byCreated,
     generateFrameURL,
     toCSV,
-    findInstances
+    findInstances,
+    getPathOfNodeWithId
 };

@@ -138,6 +138,12 @@ it("can report on repeated component usage", () => {
     expectEquivalent(actual, expected)
 });
 
+it("can output the path of a node", () => {
+    const expected = ["Document", "Page 1", "Frame 1"];
+    const actual = lib.getPathOfNodeWithId(data3.documentRes.document, "1:18");
+    expectEquivalent(actual, expected);
+});
+
 
 function it(description, block) {
     try {
