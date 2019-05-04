@@ -83,17 +83,15 @@ function findInstances(node) {
         return [node];
     }
     // error case
-    else if (node.type === "COMPONENT") {
+    else if (!node.children) {
         return [];
     }
     // recursion
-    else if (node.children) {
-        return flatten(node.children.map(findInstances));
-    }
+    return flatten(node.children.map(findInstances));
 }
 
 function findInstancesOfComponent(node, componentId) {
-    return findInstances(node).filter(_ => _.componentId == componentId);
+    return findInstances(node).filter(_ => _.componentId === componentId);
 }
 
 function getPathOfNodeWithId(node, id, path = []) {
@@ -136,6 +134,8 @@ function componentReportFromInstances(documentResponse) {
     }, {});
 }
 
+// another way of doing the above - iterate through components and find all instances.
+// it actually produces the same answer (just in a different order) but I'm interested if one would catch items the other misses, ever.
 function componentReportFromComponents(documentResponse) {
     const allComponents = documentResponse.components;
     let components = {};
@@ -149,9 +149,25 @@ function componentReportFromComponents(documentResponse) {
     return components;
 }
 
+function componentSummary(documentResponse) {
+    const components = componentReportFromComponents(documentResponse);
+    const componentIds = Object.keys(components);
+
+    // todo: partition by orphaned, local, library.
+    // can't distinguish orphaned form library at present
+    // include descriptions?
+    return componentIds.map(id => ({
+        path: components[id].path,
+        name: components[id].name,
+        count: components[id].count,
+        instances: findInstancesOfComponent(documentResponse.document, id)
+            .map(instance => ({path: getPathOfNodeWithId(documentResponse.document, instance.id)}))
+    }));
+}
+
 
 function flatten(arr) {
-    return arr.reduce((prev,current) => prev.concat(current));
+    return arr.reduce((prev,current) => prev.concat(current), []);
 }
 
 function byCreated(a,b) {
@@ -182,5 +198,6 @@ module.exports = {
     findInstances,
     getPathOfNodeWithId,
     componentReportFromInstances,
-    componentReportFromComponents
+    componentReportFromComponents,
+    componentSummary
 };

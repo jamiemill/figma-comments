@@ -179,6 +179,72 @@ it("can output the path of a node", () => {
     expectEquivalent(actual, expected);
 });
 
+it("can create a summary of component usage", () => {
+    /*
+    Library / some-name
+    - count: 1
+    - usage:
+    Document / Symbols / something
+    - count: 1
+    - instances:
+        - Document / Page 1 / Frame 1 (3 times)
+        - Document / Page 1 / Frame 2 (1 time)
+    */
+    const expected = [
+      {
+        path: ["Document", "Page 1"],
+        name: "LocalButtonComponentSamePage",
+        count: 2,
+        instances: [
+          {
+            path: ["Document", "Page 1", "Frame 1"]
+          },
+          {
+            path: ["Document", "Page 1", "Frame 2"]
+          }
+        ]
+      },
+      {
+        path: ["Document", "Symbols"],
+        name: "LocalButtonComponentSymbolsPage",
+        count: 2,
+        instances: [
+          {
+            path: ["Document", "Page 1", "Frame 1"]
+          },
+          {
+            path: ["Document", "Page 1", "Frame 2"]
+          }
+        ]
+      },
+      {
+        path: false,
+        name: "02. buttons / primary / focus",
+        count: 2,
+        instances: [
+          {
+            path: ["Document", "Page 1", "Frame 1"]
+          },
+          {
+            path: ["Document", "Page 1", "Frame 2"]
+          }
+        ]
+      },
+      {
+        path: false,
+        name: "LocalButtonComponentDeleted",
+        count: 1,
+        instances: [
+          {
+            path: ["Document", "Page 1", "Frame 1"]
+          }
+        ]
+      }
+    ];
+    const actual = lib.componentSummary(data3.documentRes);
+    expectEquivalent(actual, expected);
+});
+
 function it(description, block) {
     try {
         block();
