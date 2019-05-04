@@ -96,46 +96,40 @@ it("can find all instances", () => {
     expectEquivalent(actual, expected);
 });
 
-it("can report on repeated component usage", () => {
-    const allInstances = lib.findInstances(data3.documentRes.document);
-    const allComponents = data3.documentRes.components;
-    
-    const actual = allInstances.reduce((prev, _) => {
-        if (!prev[_.componentId]) {
-            const component = allComponents[_.componentId];
-            prev[_.componentId] = Object.assign({}, component, {count: 0});
-        }
-        prev[_.componentId].count++;
-        return prev;
-    }, {});
+it("can report on repeated component usage by looking at instances", () => {
+    const actual = lib.componentReportFromInstances(data3.documentRes);
 
     const expected = {
       "1:17": {
         key: "",
         name: "LocalButtonComponentSymbolsPage",
         description: "",
-        count: 2
+        count: 2,
+        path: ["Document", "Symbols"]
       },
       "1:24": {
         key: "3c729d01bd5e64e69eff1af87c076d5586e9564d",
         name: "02. buttons / primary / focus",
         description: "",
-        count: 2
+        count: 2,
+        path: false
       },
       "1:6": {
         key: "",
         name: "LocalButtonComponentSamePage",
         description: "",
-        count: 2
+        count: 2,
+        path: ["Document", "Page 1"]
       },
       "9:17": {
         key: "",
         name: "LocalButtonComponentDeleted",
         description: "",
-        count: 1
+        count: 1,
+        path: false
       }
     };
-    expectEquivalent(actual, expected)
+    expectEquivalent(actual, expected);
 });
 
 it("can output the path of a node", () => {
@@ -143,7 +137,6 @@ it("can output the path of a node", () => {
     const actual = lib.getPathOfNodeWithId(data3.documentRes.document, "1:18");
     expectEquivalent(actual, expected);
 });
-
 
 function it(description, block) {
     try {

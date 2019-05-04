@@ -112,6 +112,26 @@ function getPathOfNodeWithId(node, id, path = []) {
     return false;
 }
 
+// iterate through instances and build up a map of components with counts, path etc.
+function componentReportFromInstances(documentResponse) {
+    const allInstances = findInstances(documentResponse.document);
+    const allComponents = documentResponse.components;
+    
+    return allInstances.reduce((prev, _) => {
+        if (!prev[_.componentId]) {
+            const component = allComponents[_.componentId];
+            const componentPath = getPathOfNodeWithId(documentResponse.document, _.componentId);
+            const meta = {
+                count: 0,
+                path: componentPath
+            };
+            prev[_.componentId] = Object.assign({}, component, meta);
+        }
+        prev[_.componentId].count++;
+        return prev;
+    }, {});
+}
+
 
 function flatten(arr) {
     return arr.reduce((prev,current) => prev.concat(current));
@@ -143,5 +163,6 @@ module.exports = {
     generateFrameURL,
     toCSV,
     findInstances,
-    getPathOfNodeWithId
+    getPathOfNodeWithId,
+    componentReportFromInstances
 };
