@@ -82,6 +82,10 @@ function findInstances(node) {
     if (node.type === "INSTANCE") {
         return [node];
     }
+    // error case (we don't want to look inside components, even though they have children)
+    else if (node.type === "COMPONENT") {
+        return [];
+    }
     // error case
     else if (!node.children) {
         return [];
