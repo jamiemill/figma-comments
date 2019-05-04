@@ -1,5 +1,6 @@
 const data = require("./test_data");
 const data2 = require("./test_data_2");
+const data3 = require("./test_data_3");
 const lib = require("./lib");
 
 it("can find document by ID", () => {
@@ -95,9 +96,9 @@ it("can find all instances", () => {
     expectEquivalent(actual, expected);
 });
 
-it("can report on component usage", () => {
-    const allInstances = lib.findInstances(data2.documentRes.document);
-    const allComponents = data2.documentRes.components;
+it("can report on repeated component usage", () => {
+    const allInstances = lib.findInstances(data3.documentRes.document);
+    const allComponents = data3.documentRes.components;
     
     const actual = allInstances.reduce((prev, _) => {
         if (!prev[_.componentId]) {
@@ -113,17 +114,23 @@ it("can report on component usage", () => {
         key: "",
         name: "LocalButtonComponentSymbolsPage",
         description: "",
-        count: 1
+        count: 2
       },
       "1:24": {
         key: "3c729d01bd5e64e69eff1af87c076d5586e9564d",
         name: "02. buttons / primary / focus",
         description: "",
-        count: 1
+        count: 2
       },
       "1:6": {
         key: "",
         name: "LocalButtonComponentSamePage",
+        description: "",
+        count: 2
+      },
+      "9:17": {
+        key: "",
+        name: "LocalButtonComponentDeleted",
         description: "",
         count: 1
       }
