@@ -10,6 +10,14 @@ async function fetchDocumentWithComments({ACCESS_TOKEN, FILE_ID}) {
     };
 }
 
+
+async function fetchDocumentWithComponents({ACCESS_TOKEN, FILE_ID}) {
+    const documentRes = await figmaAPIRequest(`/v1/files/${FILE_ID}`, {ACCESS_TOKEN, FILE_ID});
+    return {
+        documentRes
+    };
+}
+
 function figmaAPIRequest(endpoint, {ACCESS_TOKEN, FILE_ID}) {
     const url = `https://api.figma.com${endpoint}`;
     const headers = {'X-FIGMA-TOKEN': ACCESS_TOKEN};
@@ -64,6 +72,20 @@ function findChildById(parent, id) {
     return false;
 }
 
+function findInstances(parent) {
+    if (parent.type === "INSTANCE") {
+        return [parent];
+    } else if (parent.type === "COMPONENT") {
+        return [];
+    } else if (parent.children) {
+        return flatten(parent.children.map(findInstances));
+    }
+}
+
+function flatten(arr) {
+    return arr.reduce((prev,current) => prev.concat(current));
+}
+
 function byCreated(a,b) {
     if (a.created_at < b.created_at) return -1;
     if (a.created_at > b.created_at) return 1;
@@ -81,11 +103,13 @@ function toCSV(rows) {
 module.exports = {
     figmaAPIRequest,
     fetchDocumentWithComments,
+    fetchDocumentWithComponents,
     getCommentFrame,
     getCommentTags,
     isReply,
     findChildById,
     byCreated,
     generateFrameURL,
-    toCSV
+    toCSV,
+    findInstances
 };

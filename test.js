@@ -1,4 +1,5 @@
 const data = require("./test_data");
+const data2 = require("./test_data_2");
 const lib = require("./lib");
 
 it("can find document by ID", () => {
@@ -55,6 +56,41 @@ it("can create TSVs with quotes", () => {
     expectEqual(lib.toCSV(data), expected);
 });
 
+it("can find all instances", () => {
+    const expected = [
+      {
+        id: "1:18",
+        name: "Local button instance from Symbols page",
+        componentName: "LocalButtonComponentSymbolsPage",
+        isFromLibrary: "FALSE"
+      },
+      {
+        id: "1:29",
+        name: "Library button instance",
+        componentName: "02. buttons / primary / focus",
+        isFromLibrary: "TRUE"
+      },
+      {
+        id: "1:7",
+        name: "Local button instance from same page",
+        componentName: "LocalButtonComponentSamePage",
+        isFromLibrary: "FALSE"
+      }
+    ];
+    const actual = lib.findInstances(data2.documentRes.document).map(summariseInstance);
+
+    function summariseInstance(_) {
+        return {
+            id: _.id,
+            name: _.name,
+            componentName: data2.documentRes.components[_.componentId].name,
+            isFromLibrary: data2.documentRes.components[_.componentId].key ? "TRUE" : "FALSE"
+        };
+    }
+
+    expectEquivalent(actual, expected);
+});
+
 
 function it(description, block) {
     try {
@@ -70,4 +106,14 @@ function expectEqual(actual, expected) {
     if (actual !== expected) {
         throw `  "${actual}" was expected to be "${expected}"`;
     }
+}
+
+function expectEquivalent(actual, expected) {
+    if (pp(actual) !== pp(expected)) {
+        throw `  "${pp(actual)}" was expected to be "${pp(expected)}"`;
+    }
+}
+
+function pp(obj) {
+    return JSON.stringify(obj, null, "  ");
 }
