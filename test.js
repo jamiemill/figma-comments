@@ -62,19 +62,22 @@ it("can find all instances", () => {
         id: "1:18",
         name: "Local button instance from Symbols page",
         componentName: "LocalButtonComponentSymbolsPage",
-        isFromLibrary: "FALSE"
+        isFromLibrary: "FALSE",
+        componentId: "1:17"
       },
       {
         id: "1:29",
         name: "Library button instance",
         componentName: "02. buttons / primary / focus",
-        isFromLibrary: "TRUE"
+        isFromLibrary: "TRUE",
+        componentId: "1:24"
       },
       {
         id: "1:7",
         name: "Local button instance from same page",
         componentName: "LocalButtonComponentSamePage",
-        isFromLibrary: "FALSE"
+        isFromLibrary: "FALSE",
+        componentId: "1:6"
       }
     ];
     const actual = lib.findInstances(data2.documentRes.document).map(summariseInstance);
@@ -84,11 +87,48 @@ it("can find all instances", () => {
             id: _.id,
             name: _.name,
             componentName: data2.documentRes.components[_.componentId].name,
-            isFromLibrary: data2.documentRes.components[_.componentId].key ? "TRUE" : "FALSE"
+            isFromLibrary: data2.documentRes.components[_.componentId].key ? "TRUE" : "FALSE",
+            componentId: _.componentId
         };
     }
 
     expectEquivalent(actual, expected);
+});
+
+it("can report on component usage", () => {
+    const allInstances = lib.findInstances(data2.documentRes.document);
+    const allComponents = data2.documentRes.components;
+    
+    const actual = allInstances.reduce((prev, _) => {
+        if (!prev[_.componentId]) {
+            const component = allComponents[_.componentId];
+            prev[_.componentId] = Object.assign({}, component, {count: 0});
+        }
+        prev[_.componentId].count++;
+        return prev;
+    }, {});
+
+    const expected = {
+      "1:17": {
+        key: "",
+        name: "LocalButtonComponentSymbolsPage",
+        description: "",
+        count: 1
+      },
+      "1:24": {
+        key: "3c729d01bd5e64e69eff1af87c076d5586e9564d",
+        name: "02. buttons / primary / focus",
+        description: "",
+        count: 1
+      },
+      "1:6": {
+        key: "",
+        name: "LocalButtonComponentSamePage",
+        description: "",
+        count: 1
+      }
+    };
+    expectEquivalent(actual, expected)
 });
 
 
