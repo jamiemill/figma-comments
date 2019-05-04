@@ -58,62 +58,56 @@ function isReply(comment) {
     return comment.client_meta === null;
 }
 
-function findChildById(parent, id) {
+function findChildById(node, id) {
     // base case
-    if (parent.id === id) {
-        return parent;
+    if (node.id === id) {
+        return node;
     }
     // error case
-    else if (!parent.children) {
+    else if (!node.children) {
         return false;
     }
     // recursion
-    else {
-        for (let i = 0; i < parent.children.length; i += 1) {
-            let result = findChildById(parent.children[i], id);
-            if (result !== false) {
-                return result;
-            }
+    for (let i = 0; i < node.children.length; i += 1) {
+        let result = findChildById(node.children[i], id);
+        if (result !== false) {
+            return result;
         }
-        return false;
     }
+    return false;
 }
 
-function findInstances(parent) {
+function findInstances(node) {
     // base case
-    if (parent.type === "INSTANCE") {
-        return [parent];
+    if (node.type === "INSTANCE") {
+        return [node];
     }
     // error case
-    else if (parent.type === "COMPONENT") {
+    else if (node.type === "COMPONENT") {
         return [];
     }
     // recursion
-    else if (parent.children) {
-        return flatten(parent.children.map(findInstances));
+    else if (node.children) {
+        return flatten(node.children.map(findInstances));
     }
 }
 
-function getPathOfNodeWithId(parent, id, path = []) {
-    const name = parent.name;
+function getPathOfNodeWithId(node, id, path = []) {
+    const name = node.name;
     // base case
-    if (parent.id === id) {
+    if (node.id === id) {
         return path;
     }
     // error case
-    else if (!parent.children) {
+    else if (!node.children) {
         return false;
     }
     // recursion
-    else if (parent.children) {
-        for (let i = 0; i < parent.children.length; i += 1) {
-            let result = getPathOfNodeWithId(parent.children[i], id, path.concat(name));
-            if (result !== false) {
-                return result;
-            }
+    for (let i = 0; i < node.children.length; i += 1) {
+        let result = getPathOfNodeWithId(node.children[i], id, path.concat(name));
+        if (result !== false) {
+            return result;
         }
-    } else {
-        throw "unhandled state";
     }
     return false;
 }
