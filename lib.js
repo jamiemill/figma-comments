@@ -59,25 +59,37 @@ function isReply(comment) {
 }
 
 function findChildById(parent, id) {
+    // base case
     if (parent.id === id) {
         return parent;
-    } else if (parent.children) {
+    }
+    // error case
+    else if (!parent.children) {
+        return false;
+    }
+    // recursion
+    else {
         for (let i = 0; i < parent.children.length; i += 1) {
             let result = findChildById(parent.children[i], id);
             if (result !== false) {
                 return result;
             }
         }
+        return false;
     }
-    return false;
 }
 
 function findInstances(parent) {
+    // base case
     if (parent.type === "INSTANCE") {
         return [parent];
-    } else if (parent.type === "COMPONENT") {
+    }
+    // error case
+    else if (parent.type === "COMPONENT") {
         return [];
-    } else if (parent.children) {
+    }
+    // recursion
+    else if (parent.children) {
         return flatten(parent.children.map(findInstances));
     }
 }
